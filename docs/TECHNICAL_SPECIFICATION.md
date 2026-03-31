@@ -54,37 +54,37 @@ graph TB
 ### 1.2 Component Relationships
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                        Next.js 16 (apps/web)                    │
-├─────────────────────────────────────────────────────────────────┤
-│  Pages          │  Components    │  Services     │  State       │
-│  - Home         │  - RestaurantCard │ - api.ts   │  - AuthStore │
-│  - Restaurant   │  - ReviewCard  │  - auth.ts   │  - UIStore   │
-│  - Profile      │  - MapView     │  - search.ts │              │
-│  - Search       │  - FilterPanel │              │              │
-└─────────────────────────────────────────────────────────────────┘
+┌───────────────────────────────────────────────────────────────────┐
+│                        Next.js 16 (apps/web)                      │
+├───────────────────────────────────────────────────────────────────┤
+│  Pages          │  Components       │  Services    │  State       │
+│  - Home         │  - RestaurantCard │  - api.ts    │  - AuthStore │
+│  - Restaurant   │  - ReviewCard     │  - auth.ts   │  - UIStore   │
+│  - Profile      │  - MapView        │  - search.ts │              │
+│  - Search       │  - FilterPanel    │              │              │
+└───────────────────────────────────────────────────────────────────┘
                             │ REST API
                             ▼
 ┌─────────────────────────────────────────────────────────────────┐
 │                        Django 6 (apps/api)                      │
 ├─────────────────────────────────────────────────────────────────┤
-│  Apps:                                                           │
-│  ┌────────────┐ ┌────────────┐ ┌────────────┐ ┌────────────┐   │
-│  │ restaurants│ │  reviews   │ │   users    │ │   files    │   │
-│  │            │ │            │ │            │ │            │   │
-│  │ - models   │ │ - models   │ │ - models   │ │ - models   │   │
-│  │ - views    │ │ - views    │ │ - views    │ │ - views    │   │
-│  │ - urls     │ │ - urls     │ │ - urls     │ │ - urls     │   │
-│  └────────────┘ └────────────┘ └────────────┘ └────────────┘   │
+│  Apps:                                                          │
+│  ┌────────────┐ ┌────────────┐ ┌────────────┐ ┌────────────┐    │
+│  │ restaurants│ │  reviews   │ │   users    │ │   files    │    │
+│  │            │ │            │ │            │ │            │    │
+│  │ - models   │ │ - models   │ │ - models   │ │ - models   │    │
+│  │ - views    │ │ - views    │ │ - views    │ │ - views    │    │
+│  │ - urls     │ │ - urls     │ │ - urls     │ │ - urls     │    │
+│  └────────────┘ └────────────┘ └────────────┘ └────────────┘    │
 ├─────────────────────────────────────────────────────────────────┤
-│  Middleware: AuthMiddleware, CORSMiddleware, RateLimitMiddleware │
+│ Middleware: AuthMiddleware, CORSMiddleware, RateLimitMiddleware │
 └─────────────────────────────────────────────────────────────────┘
                             │
                             ▼
 ┌─────────────────────────────────────────────────────────────────┐
 │                        Data Layer                               │
 ├─────────────────────────────────────────────────────────────────┤
-│  PostgreSQL (Primary)  │  MinIO (Files)  │  Redis (Cache)      │
+│   PostgreSQL (Primary)  │  MinIO (Files)  │  Redis (Cache)      │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
