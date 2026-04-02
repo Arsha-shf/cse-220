@@ -1,282 +1,179 @@
-# FlavorMap — 4-Week Development Plan
+# FlavorMap - 5-Week Delivery Plan (Break-Adjusted)
 
-> **Version:** 1.0
-> **Date:** 2026-03-27
-> **Total Duration:** 4 Weeks
+> **Version:** 5.0
+> **Date:** 2026-04-02
+> **Total Active Work:** 5 Weeks
+> **Planned Break:** 2026-04-09 to 2026-04-15
+> **Plan Window (calendar):** 2026-03-30 to 2026-05-10
 > **Milestones:** 5
 
 ---
 
-## Timeline Overview
+## Planning updates
 
-```
-Week 1          Week 2          Week 3          Week 4
-┌──────────────┬──────────────┬──────────────┬──────────────┐
-│  M1    M2    │     M2       │     M3       │  M4    M5   │
-│  ████  ████  │     ████     │     ████     │  ████  ████ │
-└──────────────┴──────────────┴──────────────┴──────────────┘
-```
+- Inserted a project break from **Apr 9 to Apr 15**.
+- Shifted all planned work that overlaps/starts after break by 7 days.
+- Kept backlog structure and epic/sub-issue relationships unchanged.
 
 ---
 
-## Milestone 1: Foundation & Basic CRUD
+## Timeline overview
 
-**Duration:** Days 1-3 (Week 1)
-**Goal:** Working Django + Next.js setup with basic restaurant CRUD
+```
+W1 active       W2 pre-break     BREAK           W3 active      W4 active      W5 active
+Mar30-Apr05     Apr06-Apr08      Apr09-Apr15     Apr16-Apr22    Apr23-Apr29    Apr30-May06
+|--------------|---------------|---------------|--------------|--------------|--------------|
+      M1            M2 (part)      NO WORK          M2/M3            M4              M5
 
-| #   | Feature                                | Issue | Priority |
-| --- | -------------------------------------- | ----- | -------- |
-| —   | Django + Next.js project setup         | —     | Required |
-| —   | Database models (Restaurant, Category) | #2    | Required |
-| —   | Basic CRUD API endpoints               | #2    | Required |
-| #3  | Category System                        | #3    | Required |
-| —   | Admin panel configuration              | —     | Required |
-
-### Deliverables
-
-- [ ] Django project with migrations
-- [ ] Next.js app running
-- [ ] Restaurant model with CRUD API
-- [ ] Category model with many-to-many relation
-- [ ] Admin panel for data management
-
-### Verification
-
-```bash
-# API
-POST /api/restaurants/     # Create
-GET  /api/restaurants/     # List
-GET  /api/restaurants/{id} # Detail
-PUT  /api/restaurants/{id} # Update
-DELETE /api/restaurants/{id} # Delete
-
-# Admin
-/admin/ accessible with superuser
+Final wrap window: May07-May10
 ```
 
 ---
 
-## Milestone 2: Core User Features (Top 5)
+## Cycle plan
 
-**Duration:** Days 4-7 (Week 1-2)
-**Goal:** Essential features for user engagement
-
-| #   | Feature                  | Issue | Priority |
-| --- | ------------------------ | ----- | -------- |
-| #8  | Average Rating           | #8    | High     |
-| #9  | Reviews & Ratings System | #9    | High     |
-| #12 | User Authentication      | #12   | High     |
-| #13 | Favorites List           | #13   | Medium   |
-| #16 | Search                   | #16   | Medium   |
-
-### Deliverables
-
-- [ ] User registration and login
-- [ ] Token-based authentication
-- [ ] Write/edit/delete reviews (1-5 stars)
-- [ ] One review per user per restaurant
-- [ ] Average rating calculation
-- [ ] Add/remove favorites
-- [ ] Search by name, description, location
-
-### Verification
-
-```bash
-# Auth
-POST /api/auth/register/
-POST /api/auth/login/
-POST /api/auth/logout/
-
-# Reviews
-POST /api/restaurants/{id}/reviews/
-GET  /api/restaurants/{id}/reviews/
-
-# Favorites
-POST /api/favorites/{restaurant_id}/
-GET  /api/favorites/
-
-# Search
-GET /api/restaurants/search?q=pizza
-```
+| Cycle | Window                   | Note               |
+| ----- | ------------------------ | ------------------ |
+| W1    | 2026-03-30 to 2026-04-05 | Active             |
+| W2    | 2026-04-06 to 2026-04-08 | Active (pre-break) |
+| BREAK | 2026-04-09 to 2026-04-15 | No project work    |
+| W3    | 2026-04-16 to 2026-04-22 | Active             |
+| W4    | 2026-04-23 to 2026-04-29 | Active             |
+| W5    | 2026-04-30 to 2026-05-06 | Active             |
+| W6    | 2026-05-07 to 2026-05-10 | Final wrap         |
 
 ---
 
-## Milestone 3: Filtering & Discovery
+## Milestone windows (adjusted)
 
-**Duration:** Days 8-14 (Week 2-3)
-**Goal:** Help users find exactly what they want
-
-| #   | Feature            | Issue | Priority |
-| --- | ------------------ | ----- | -------- |
-| #6  | Location Filter    | #6    | Medium   |
-| #7  | Price Range Filter | #7    | Medium   |
-| #5  | Advanced Filtering | #5    | Medium   |
-| #19 | Opening Hours      | #19   | Medium   |
-| #20 | Popular Ranking    | #20   | Low      |
-
-### Deliverables
-
-- [ ] City and district fields on Restaurant
-- [ ] Location filter API
-- [ ] Price range filter (€, €€, €€€)
-- [ ] Combined multi-filter (category + location + price)
-- [ ] Opening hours model and API
-- [ ] Homepage: top-rated section
-- [ ] Homepage: newest section
-
-### Verification
-
-```bash
-# Filters
-GET /api/restaurants/?city=Istanbul
-GET /api/restaurants/?price=1,2
-GET /api/restaurants/?category=turkish&city=Istanbul&min_rating=4
-
-# Opening Hours
-GET /api/restaurants/{id}/hours/
-
-# Homepage
-GET /api/restaurants/?sort=rating&limit=5
-GET /api/restaurants/?sort=newest&limit=5
-```
+| Milestone                              | Window                   |
+| -------------------------------------- | ------------------------ |
+| M1: Critical Foundation (Current Week) | 2026-03-30 to 2026-04-05 |
+| M2: Engagement Core                    | 2026-04-06 to 2026-04-19 |
+| M3: Discovery Intelligence             | 2026-04-20 to 2026-04-26 |
+| M4: Media and Data Integrity           | 2026-04-27 to 2026-05-03 |
+| M5: Maps and Social/Role Polish        | 2026-05-04 to 2026-05-10 |
 
 ---
 
-## Milestone 4: Media & Infrastructure
+## Milestone 1: Critical Foundation
 
-**Duration:** Days 15-21 (Week 3-4)
-**Goal:** Photo handling and file storage infrastructure
+**Window:** 2026-03-30 to 2026-04-05
 
-| #   | Feature                | Issue | Priority |
-| --- | ---------------------- | ----- | -------- |
-| #24 | Object File Management | #24   | Required |
-| #17 | Restaurant Photo       | #17   | Medium   |
-| #18 | Photo Gallery          | #18   | Low      |
-| #4  | Menu Management        | #4    | Medium   |
-| #21 | Atomic Transactions    | #21   | Medium   |
-
-### Deliverables
-
-- [ ] FileStorage abstract class
-- [ ] LocalFileStorage implementation
-- [ ] MinioStorage implementation
-- [ ] FileService with dependency injection
-- [ ] Restaurant photo upload
-- [ ] Multiple photos per restaurant
-- [ ] Lightbox viewer
-- [ ] Menu items CRUD
-- [ ] Atomic transactions for multi-step operations
-
-### Verification
-
-```bash
-# File Upload
-POST /api/restaurants/{id}/photos/  # multipart/form-data
-
-# Menu
-POST /api/restaurants/{id}/menu/
-GET  /api/restaurants/{id}/menu/
-
-# Storage backends switch via env var
-FILE_STORAGE_BACKEND=local|minio
-```
+| Issue | Feature                                 |
+| ----- | --------------------------------------- |
+| #2    | EPIC: Restaurant CRUD and category core |
+| #38   | Resturant Listing and Management        |
+| #3    | Category System                         |
+| #12   | EPIC: User Authentication and Profile   |
+| #35   | Sign Up API and Flow                    |
+| #36   | Sign In API and Session/Token Flow      |
+| #14   | User Profile                            |
+| #24   | Object File Management                  |
 
 ---
 
-## Milestone 5: Maps & Final Polish
+## Milestone 2: Engagement Core
 
-**Duration:** Days 22-28 (Week 4)
-**Goal:** Map integration, engagement features, production readiness
+**Window:** 2026-04-06 to 2026-04-19 (with break in the middle)
 
-| #   | Feature               | Issue | Priority |
-| --- | --------------------- | ----- | -------- |
-| #22 | Map Integration       | #22   | Low      |
-| #10 | Review Replies        | #10   | Low      |
-| #11 | Review Likes          | #11   | Low      |
-| #15 | Restaurant Owner Role | #15   | Low      |
-| #14 | User Profile          | #14   | Low      |
-
-### Deliverables
-
-- [ ] Latitude/longitude fields
-- [ ] Google Maps iframe on detail page
-- [ ] Geocoding service
-- [ ] Review replies (one level deep)
-- [ ] Review likes/dislikes
-- [ ] Sort reviews by helpfulness
-- [ ] Restaurant owner role
-- [ ] Claim restaurant flow
-- [ ] User profile page
-- [ ] Production deployment config
-
-### Verification
-
-```bash
-# Maps
-GET /api/restaurants/{id}/map/
-GET /api/restaurants/?lat=41.0082&lng=28.9784&radius=5
-
-# Engagement
-POST /api/reviews/{id}/reply/
-POST /api/reviews/{id}/like/
-
-# Profile
-GET /api/profile/
-GET /api/profile/reviews/
-GET /api/profile/favorites/
-```
+| Issue | Feature                                |
+| ----- | -------------------------------------- |
+| #8    | Average Rating                         |
+| #9    | EPIC: Reviews and Ratings              |
+| #13   | Favorites List                         |
+| #16   | Search                                 |
+| #23   | EPIC: Discovery and Homepage (kickoff) |
 
 ---
 
-## Dependency Graph
+## Milestone 3: Discovery Intelligence
 
-```
-Milestone 1 (Foundation)
-    │
-    ├──▶ Milestone 2 (Core Features)
-    │        │
-    │        ├──▶ Milestone 3 (Filtering)
-    │        │        │
-    │        │        └──▶ Milestone 4 (Media) ──▶ Milestone 5 (Maps & Polish)
-    │        │                    │
-    │        │                    └──▶ #24 (Object File Management)
-    │        │                            └──▶ #17, #18 (Photos)
-```
+**Window:** 2026-04-20 to 2026-04-26
+
+| Issue | Feature                    |
+| ----- | -------------------------- |
+| #37   | EPIC: Search and Filtering |
+| #5    | Advanced Filtering         |
+| #6    | Location Filter            |
+| #7    | Price Range Filter         |
+| #20   | Popular Ranking            |
 
 ---
 
-## Issue Distribution
+## Milestone 4: Media and Data Integrity
 
-| Milestone | Issues                  | Count  |
-| --------- | ----------------------- | ------ |
-| M1        | #2, #3, setup           | 3      |
-| M2        | #8, #9, #12, #13, #16   | 5      |
-| M3        | #6, #7, #5, #19, #20    | 5      |
-| M4        | #24, #17, #18, #4, #21  | 5      |
-| M5        | #22, #10, #11, #15, #14 | 5      |
-| **Total** |                         | **23** |
+**Window:** 2026-04-27 to 2026-05-03
 
----
-
-## Risk Register
-
-| Risk                               | Impact | Mitigation                          |
-| ---------------------------------- | ------ | ----------------------------------- |
-| #24 (File Storage) delays #17, #18 | High   | Implement LocalFileStorage first    |
-| Auth complexity in M2              | Medium | Use Django built-in auth            |
-| Map API key requirements           | Low    | Use iframe mode (no key)            |
-| Time constraints                   | High   | Prioritize M1-M2, defer M5 features |
+| Issue | Feature             |
+| ----- | ------------------- |
+| #4    | Menu Management     |
+| #17   | Restaurant Photo    |
+| #18   | Photo Gallery       |
+| #19   | Opening Hours       |
+| #21   | Atomic Transactions |
 
 ---
 
-## Definition of Done (Per Milestone)
+## Milestone 5: Maps and Social/Role Polish
 
-1. All features implemented and tested
-2. API endpoints documented
-3. No critical bugs
-4. Code committed and pushed
-5. Demo-able functionality
+**Window:** 2026-05-04 to 2026-05-10
+
+| Issue | Feature               |
+| ----- | --------------------- |
+| #22   | EPIC: Map Integration |
+| #10   | Review Replies        |
+| #11   | Review Likes          |
+| #15   | Restaurant Owner Role |
 
 ---
 
-_Plan generated from PRODUCT_REQUIREMENTS.md_
+## Issue schedule (start and target dates)
+
+| Issue | Title                                   | Cycle | Start      | Target     |
+| ----- | --------------------------------------- | ----- | ---------- | ---------- |
+| #2    | EPIC: Restaurant CRUD and category core | W1    | 2026-03-30 | 2026-05-03 |
+| #3    | Category System                         | W1    | 2026-03-31 | 2026-04-04 |
+| #4    | Menu Management                         | W4    | 2026-04-27 | 2026-05-01 |
+| #5    | Advanced Filtering                      | W3    | 2026-04-20 | 2026-04-24 |
+| #6    | Location Filter                         | W3    | 2026-04-20 | 2026-04-23 |
+| #7    | Price Range Filter                      | W3    | 2026-04-21 | 2026-04-24 |
+| #8    | Average Rating                          | W2    | 2026-04-06 | 2026-04-16 |
+| #9    | EPIC: Reviews and Ratings               | W2    | 2026-04-06 | 2026-05-09 |
+| #10   | Review Replies                          | W5    | 2026-05-05 | 2026-05-09 |
+| #11   | Review Likes                            | W5    | 2026-05-05 | 2026-05-09 |
+| #12   | EPIC: User Authentication and Profile   | W1    | 2026-03-30 | 2026-05-10 |
+| #13   | Favorites List                          | W2    | 2026-04-08 | 2026-04-19 |
+| #14   | User Profile                            | W1    | 2026-04-01 | 2026-04-05 |
+| #15   | Restaurant Owner Role                   | W5    | 2026-05-06 | 2026-05-10 |
+| #16   | Search                                  | W2    | 2026-04-08 | 2026-04-19 |
+| #17   | Restaurant Photo                        | W4    | 2026-04-27 | 2026-05-02 |
+| #18   | Photo Gallery                           | W4    | 2026-04-29 | 2026-05-03 |
+| #19   | Opening Hours                           | W4    | 2026-04-28 | 2026-05-03 |
+| #20   | Popular Ranking                         | W3    | 2026-04-23 | 2026-04-26 |
+| #21   | Atomic Transactions                     | W4    | 2026-04-28 | 2026-05-03 |
+| #22   | EPIC: Map Integration                   | W5    | 2026-05-04 | 2026-05-08 |
+| #23   | EPIC: Discovery and Homepage            | W2    | 2026-04-06 | 2026-05-08 |
+| #24   | Object File Management                  | W1    | 2026-03-30 | 2026-04-05 |
+| #35   | Sign Up API and Flow                    | W1    | 2026-03-30 | 2026-04-03 |
+| #36   | Sign In API and Session/Token Flow      | W1    | 2026-03-31 | 2026-04-04 |
+| #37   | EPIC: Search and Filtering              | W3    | 2026-04-20 | 2026-04-26 |
+| #38   | Resturant Listing and Management        | W1    | 2026-03-30 | 2026-04-03 |
+
+---
+
+## Dependencies to keep strict
+
+- `#24` completes before full photo/gallery rollout (`#17`, `#18`) and profile media dependency.
+- `#35` and `#36` are gating items for auth epic `#12`.
+- `#19` remains under epic `#2` as requested.
+- Search/filter epic `#37` drives `#5/#6/#7` and relies on baseline search (`#16`).
+
+---
+
+## Definition of done (per milestone)
+
+1. Milestone issues merged and demo-ready.
+2. API behavior validated for milestone scope.
+3. No critical unresolved defects in scope.
+4. Documentation and project planning fields are updated.
