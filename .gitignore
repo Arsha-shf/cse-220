@@ -78,3 +78,6 @@ apps/api/logs/
 /nx
 /nx.bat
 /apps/api/db.sqlite3
+/research
+/docs/research/restaurant-uxui
+/.vscode/extensions.json
