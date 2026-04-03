@@ -1,7 +1,10 @@
+[tool.pytest.ini_options]
+addopts = "-q"
+
 [tool.poetry]
 name = "api-http"
-version = "0.1.0"
-description = "Decorator-driven HTTP controller toolkit for Django"
+version = "1.0.0"
+description = "Internal Django HTTP controller helper library for FlavorMap"
 authors = []
 license = "Proprietary"
 readme = "README.md"
@@ -14,7 +17,7 @@ python = ">=3.12,<3.15"
 django = "^6.0"
 
 [tool.poetry.group.dev.dependencies]
-pytest = "8.3.4"
+pytest = "^8.3.4"
 
 [build-system]
 requires = ["poetry-core"]

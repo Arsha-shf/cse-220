@@ -81,3 +81,8 @@ apps/api/logs/
 /research
 /docs/research/restaurant-uxui
 /.vscode/extensions.json
+/apps/api/.coverage
+/apps/coverage/apps
+/apps/reports/apps/unittests
+/.cache/
+/.coverage

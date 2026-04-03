@@ -1,5 +1,5 @@
-"Constants for API HTTP."
+"""Internal attribute keys used for controller route metadata."""
 
-_ROUTES_ATTR = "__api_http_routes__"
-_HOOKS_ATTR = "__api_http_hooks__"
-_PREFIX_ATTR = "__api_http_prefix__"
+CONTROLLER_PREFIX_ATTR = "__api_http_prefix__"
+ROUTE_ATTR = "__api_http_route__"
+PENDING_DECORATORS_ATTR = "__api_http_pending_decorators__"

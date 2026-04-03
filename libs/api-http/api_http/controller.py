@@ -1,39 +1,72 @@
-from django.http import HttpResponse, JsonResponse
-from constants import _PREFIX_ATTR, _HOOKS_ATTR
+"""Controller base class and response helper methods."""
 
+from __future__ import annotations
 
-def controller(*, prefix: str = ""):
-    """Mark a class as an HTTP controller."""
+from typing import Any
 
-    def decorator(cls):
-        setattr(cls, _PREFIX_ATTR, prefix)
-        if not hasattr(cls, _HOOKS_ATTR):
-            setattr(cls, _HOOKS_ATTR, [])
-        return cls
+from django.http import HttpRequest
 
-    return decorator
+from .responses import (
+    CreatedResponse,
+    ErrorResponse,
+    JsonApiResponse,
+    NoContentResponse,
+    OkResponse,
+)
 
 
 class Controller:
-    """Base class for controller methods and JSON helpers."""
+    """Base class for class-based endpoint handlers."""
 
-    def __init__(self, request):
+    def __init__(self, request: HttpRequest | None):
         self.request = request
 
-    def json(self, payload: dict, *, status: int = 200) -> JsonResponse:
-        """Helper method to return a JSON response."""
-        return JsonResponse(payload, status=status)
+    def json(
+        self,
+        payload: Any,
+        *,
+        status: int = 200,
+        headers: dict[str, str] | None = None,
+    ) -> JsonApiResponse:
+        """Return JSON payload with explicit status and headers."""
 
-    def ok(self, data=None) -> JsonResponse:
-        """Helper method to return a 200 OK response with optional data."""
-        return self.json({"data": data})
+        return JsonApiResponse(payload, status=status, headers=headers)
 
-    def created(self, data=None) -> JsonResponse:
-        """
-        Helper method to return a 201 Created response with optional data.
-        """
-        return self.json({"data": data}, status=201)
+    def ok(self, payload: Any, *, headers: dict[str, str] | None = None) -> OkResponse:
+        """Return a successful JSON response (HTTP 200)."""
 
-    def no_content(self) -> HttpResponse:
-        """Helper method to return a 204 No Content response."""
-        return HttpResponse(status=204)
+        return OkResponse(payload, headers=headers)
+
+    def created(
+        self,
+        payload: Any,
+        *,
+        headers: dict[str, str] | None = None,
+    ) -> CreatedResponse:
+        """Return a resource-created JSON response (HTTP 201)."""
+
+        return CreatedResponse(payload, headers=headers)
+
+    def no_content(self, *, headers: dict[str, str] | None = None) -> NoContentResponse:
+        """Return a no-content response (HTTP 204)."""
+
+        return NoContentResponse(headers=headers)
+
+    def error(
+        self,
+        *,
+        status: int,
+        code: str,
+        message: str,
+        details: Any | None = None,
+        headers: dict[str, str] | None = None,
+    ) -> ErrorResponse:
+        """Return a standardized JSON error response."""
+
+        return ErrorResponse(
+            status=status,
+            error_code=code,
+            message=message,
+            details=details,
+            headers=headers,
+        )

@@ -27,13 +27,11 @@
       "options": {}
     },
     "build": {
-      "executor": "@nxlv/python:build",
+      "executor": "nx:run-commands",
       "outputs": ["{projectRoot}/dist"],
       "options": {
-        "outputPath": "{projectRoot}/dist",
-        "publish": false,
-        "lockedVersions": true,
-        "bundleLocalDependencies": true
+        "command": "poetry build -o dist",
+        "cwd": "{projectRoot}"
       },
       "cache": true
     },
@@ -49,6 +47,86 @@
       },
       "cache": true
     },
+    "django": {
+      "executor": "@nxlv/python:run-commands",
+      "options": {
+        "command": "poetry run python manage.py",
+        "cwd": "{projectRoot}"
+      },
+      "cache": false
+    },
+    "runserver": {
+      "executor": "@nxlv/python:run-commands",
+      "options": {
+        "command": "poetry run python manage.py runserver",
+        "cwd": "{projectRoot}"
+      },
+      "cache": false
+    },
+    "makemigrations": {
+      "executor": "@nxlv/python:run-commands",
+      "options": {
+        "command": "poetry run python manage.py makemigrations",
+        "cwd": "{projectRoot}"
+      },
+      "cache": false
+    },
+    "makemigrations-check": {
+      "executor": "@nxlv/python:run-commands",
+      "options": {
+        "command": "poetry run python manage.py makemigrations --check --dry-run",
+        "cwd": "{projectRoot}"
+      },
+      "cache": false
+    },
+    "migrate": {
+      "executor": "@nxlv/python:run-commands",
+      "options": {
+        "command": "poetry run python manage.py migrate",
+        "cwd": "{projectRoot}"
+      },
+      "cache": false
+    },
+    "showmigrations": {
+      "executor": "@nxlv/python:run-commands",
+      "options": {
+        "command": "poetry run python manage.py showmigrations",
+        "cwd": "{projectRoot}"
+      },
+      "cache": false
+    },
+    "createsuperuser": {
+      "executor": "@nxlv/python:run-commands",
+      "options": {
+        "command": "poetry run python manage.py createsuperuser",
+        "cwd": "{projectRoot}"
+      },
+      "cache": false
+    },
+    "shell": {
+      "executor": "@nxlv/python:run-commands",
+      "options": {
+        "command": "poetry run python manage.py shell",
+        "cwd": "{projectRoot}"
+      },
+      "cache": false
+    },
+    "check": {
+      "executor": "@nxlv/python:run-commands",
+      "options": {
+        "command": "poetry run python manage.py check",
+        "cwd": "{projectRoot}"
+      },
+      "cache": false
+    },
+    "collectstatic": {
+      "executor": "@nxlv/python:run-commands",
+      "options": {
+        "command": "poetry run python manage.py collectstatic --noinput",
+        "cwd": "{projectRoot}"
+      },
+      "cache": false
+    },
     "install": {
       "executor": "@nxlv/python:install",
       "options": {
@@ -61,6 +139,7 @@
     }
   },
   "tags": [],
+  "implicitDependencies": ["api-http"],
   "release": {
     "version": {
       "versionActions": "@nxlv/python/release/version-actions"

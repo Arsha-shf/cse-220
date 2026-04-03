@@ -1,61 +1,106 @@
-"""Error types and response mapping for api_http."""
+"""Error classes for controller-level error handling."""
 
-from django.http import JsonResponse
+from __future__ import annotations
+
+from typing import Any
+
+from .responses import ErrorResponse
 
 
 class ApiHttpError(Exception):
-    """Base error type for controller exceptions."""
+    """Base exception used for standardized API error responses."""
 
-    status_code = 400
-    code = "bad_request"
+    status_code = 500
+    error_code = "api_http_error"
+    default_message = "An unexpected API error occurred."
 
-    def __init__(self, message: str, *, details=None, status_code: int | None = None):
-        super().__init__(message)
-        self.message = message
+    def __init__(
+        self,
+        message: str | None = None,
+        *,
+        details: Any | None = None,
+        status_code: int | None = None,
+        error_code: str | None = None,
+        headers: dict[str, str] | None = None,
+    ):
+        self.message = message or self.default_message
         self.details = details
-        if status_code is not None:
-            self.status_code = status_code
+        self.status_code = status_code or self.status_code
+        self.error_code = error_code or self.error_code
+        self.headers = headers
+        super().__init__(self.message)
 
-    def to_payload(self) -> dict:
-        error = {
-            "code": self.code,
-            "message": self.message,
-        }
-        if self.details is not None:
-            error["details"] = self.details
-        return {"error": error}
+    def to_response(self) -> ErrorResponse:
+        """Convert exception into a standardized HTTP response."""
+
+        return ErrorResponse(
+            status=self.status_code,
+            error_code=self.error_code,
+            message=self.message,
+            details=self.details,
+            headers=self.headers,
+        )
 
 
-class BadRequestError(ApiHttpError):
-    code = "bad_request"
+class RouteConfigurationError(ApiHttpError):
+    """Raised when route metadata is invalid or conflicting."""
+
+    status_code = 500
+    error_code = "route_configuration_error"
+    default_message = "Route configuration is invalid."
+
+
+class ResponseHandlingError(ApiHttpError):
+    """Raised when a controller returns an unsupported response type."""
+
+    status_code = 500
+    error_code = "invalid_controller_response"
+    default_message = "Controller must return an HttpResponse-compatible object."
+
+
+class ValidationError(ApiHttpError):
+    """Raised for request validation errors."""
+
     status_code = 400
+    error_code = "validation_error"
+    default_message = "Request validation failed."
 
 
 class UnauthorizedError(ApiHttpError):
-    code = "unauthorized"
+    """Raised for authentication failures."""
+
     status_code = 401
+    error_code = "unauthorized"
+    default_message = "Authentication is required."
+
+
+class ForbiddenError(ApiHttpError):
+    """Raised when an authenticated actor lacks required permissions."""
+
+    status_code = 403
+    error_code = "forbidden"
+    default_message = "You do not have permission to access this resource."
 
 
 class NotFoundError(ApiHttpError):
-    code = "not_found"
+    """Raised when a requested entity does not exist."""
+
     status_code = 404
+    error_code = "not_found"
+    default_message = "The requested resource was not found."
 
 
-class MethodNotAllowedError(ApiHttpError):
-    code = "method_not_allowed"
-    status_code = 405
+class ConflictError(ApiHttpError):
+    """Raised for domain conflict scenarios."""
+
+    status_code = 409
+    error_code = "conflict"
+    default_message = "Request conflicts with current state."
 
 
 class InternalServerError(ApiHttpError):
-    code = "internal_server_error"
+    """Raised for unexpected server-side failures."""
+
     status_code = 500
-
-
-def map_exception_to_response(exc: Exception) -> JsonResponse:
-    """Convert exceptions into uniform JSON responses."""
-
-    if isinstance(exc, ApiHttpError):
-        return JsonResponse(exc.to_payload(), status=exc.status_code)
-
-    fallback = InternalServerError("An unexpected error occurred.")
-    return JsonResponse(fallback.to_payload(), status=fallback.status_code)
+    error_code = "internal_server_error"
+    default_message = "An internal server error occurred."
