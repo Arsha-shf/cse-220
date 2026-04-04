@@ -6,6 +6,15 @@ Use this file as a quick reference for Django backend workflows through Nx.
 
 All commands below assume current directory is repository root.
 
+## One-Step Dev Setup
+
+```bash
+./dev-setup.sh
+
+# Windows PowerShell
+./dev-setup.ps1
+```
+
 ## Core Django Commands
 
 ```bash
