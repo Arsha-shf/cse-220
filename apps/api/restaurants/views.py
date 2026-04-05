@@ -15,7 +15,6 @@ from restaurants.dtos import RestaurantDto
 from restaurants.models import Restaurant
 from users.models import UserRole
 
-
 @controller()
 class RestaurantsController(Controller):
     """Controller for restaurant endpoints."""
