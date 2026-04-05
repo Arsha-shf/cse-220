@@ -36,7 +36,7 @@ function Install-Poetry-Deps {
     $projectDir = if ($Project) { "$rootDir/$Project" } else { $rootDir }
 
     if (-not (Test-Path "$projectDir/pyproject.toml")) {
-        Write-Host "Skipping $StepName: pyproject.toml not found" -ForegroundColor Gray
+        Write-Host "Skipping $StepName - pyproject.toml not found" -ForegroundColor Gray
         return
     }
 
