@@ -1,8 +1,19 @@
 """Views for restaurant endpoints."""
 
-from api_http import Controller, controller, delete, get, patch, post
+from api_http import (
+    Controller,
+    UserIsAuthenticated,
+    UserRoleRequired,
+    controller,
+    delete,
+    get,
+    guard,
+    patch,
+    post,
+)
 from restaurants.dtos import RestaurantDto
 from restaurants.models import Restaurant
+from users.models import UserRole
 
 
 @controller()
@@ -107,6 +118,8 @@ class RestaurantsController(Controller):
         )
 
     @delete("<slug:slug>/")
+    @guard(UserIsAuthenticated)
+    @guard(UserRoleRequired(UserRole.ADMIN))
     def restaurant_delete(self, slug):
         """Scaffold for admin-only restaurant deletion."""
         # TODO(implementation guide):
@@ -118,10 +131,13 @@ class RestaurantsController(Controller):
         # 4) Delete model and return api_http no-content helper:
         #    - restaurant.delete()
         #    - return self.no_content()
-        return self.error(
-            status=501,
-            code="not_implemented",
-            message=(
-                f"restaurant_delete for slug '{slug}' is scaffolded but not implemented."
-            ),
-        )
+        restaurant = Restaurant.objects.filter(slug=slug).first()
+        if restaurant is None:
+            return self.error(
+                status=404,
+                code="not_found",
+                message="Restaurant not found.",
+            )
+
+        restaurant.delete()
+        return self.no_content()
