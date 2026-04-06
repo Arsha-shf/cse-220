@@ -66,18 +66,13 @@ class RestaurantsController(Controller):
         return self.json({"data": data})
 
     @post()
+    @guard(UserIsAuthenticated)
+    @guard(UserRoleRequired(UserRole.OWNER))
     def restaurant_create(self):
         """Scaffold for owner-only restaurant creation."""
         # TODO(implementation guide):
-        # 1) Auth check with request user + api_http error helper.
-        #    - user = getattr(self.request, "user", None)
-        #    - if user is None or not user.is_authenticated:
-        #        return self.error(status=401, code="auth_required", message="Authentication is required.")
-        #
-        # 2) Role check for owners.
-        #    - from users.models import UserRole
-        #    - if user.role != UserRole.OWNER:
-        #        return self.error(status=403, code="forbidden", message="Only restaurant owners can create restaurants.")
+        # 1) Auth check (skip)
+        # 2) Role check for owners (skip)
         #
         # 3) Parse request JSON body and validate required fields.
         #    - validate at least: name, description, category_id, address_line1, city
@@ -96,10 +91,12 @@ class RestaurantsController(Controller):
         )
 
     @patch("<slug:slug>/")
+    @guard(UserIsAuthenticated)
+    @guard(UserRoleRequired(UserRole.OWNER))
     def restaurant_update(self, slug):
         """Scaffold for owner-only restaurant update."""
-        # TODO(implementation guide):
-        # 1) Repeat auth + owner role checks (same api_http `self.error(...)` pattern as create).
+        # TODO: (implementation guide)
+        # 1)  auth check (skip)
         # 2) Load restaurant by slug:
         #    - restaurant = Restaurant.objects.filter(slug=slug).first()
         #    - if restaurant is None: return self.error(status=404, code="not_found", message="Restaurant not found.")
@@ -121,15 +118,6 @@ class RestaurantsController(Controller):
     @guard(UserRoleRequired(UserRole.ADMIN))
     def restaurant_delete(self, slug):
         """Scaffold for admin-only restaurant deletion."""
-        # TODO(implementation guide):
-        # 1) Require authenticated user with the same auth check pattern.
-        # 2) Admin role check.
-        #    - from users.models import UserRole
-        #    - if user.role != UserRole.ADMIN: return self.error(status=403, code="forbidden", ...)
-        # 3) Load by slug and return 404 if not found.
-        # 4) Delete model and return api_http no-content helper:
-        #    - restaurant.delete()
-        #    - return self.no_content()
         restaurant = Restaurant.objects.filter(slug=slug).first()
         if restaurant is None:
             return self.error(
