@@ -1,5 +1,7 @@
 """Views for restaurant endpoints."""
 
+from json import JSONDecodeError
+from dtos import RestaurantUpdateDto
 from api_http import (
     Controller,
     UserIsAuthenticated,
@@ -89,29 +91,44 @@ class RestaurantsController(Controller):
             code="not_implemented",
             message="restaurant_create is scaffolded but not implemented.",
         )
-
+    
     @patch("<slug:slug>/")
     @guard(UserIsAuthenticated)
     @guard(UserRoleRequired(UserRole.OWNER))
     def restaurant_update(self, slug):
         """Scaffold for owner-only restaurant update."""
-        # TODO: (implementation guide)
-        # 1)  auth check (skip)
-        # 2) Load restaurant by slug:
-        #    - restaurant = Restaurant.objects.filter(slug=slug).first()
-        #    - if restaurant is None: return self.error(status=404, code="not_found", message="Restaurant not found.")
-        # 3) Ownership check:
-        #    - if restaurant.owner_id != user.id: return self.error(status=403, code="forbidden", ...)
-        # 4) Parse partial payload, validate allowed fields only, and reject empty patch payload.
-        # 5) Apply validated fields, save model, and serialize with DTO:
-        #    - return self.json({"data": RestaurantDto.from_model(restaurant)})
-        return self.error(
-            status=501,
-            code="not_implemented",
-            message=(
-                f"restaurant_update for slug '{slug}' is scaffolded but not implemented."
-            ),
-        )
+        restaurant = Restaurant.objects.filter(slug=slug).first()
+        if restaurant is None: 
+            return self.error(
+                status=404, 
+                code="not_found", 
+                message="Restaurant not found.")
+        if restaurant.owner_id != self.request.user.id:
+            return self.error(
+                status=403,
+                code="forbidden",
+                message="You do not have permission to update this restaurant.",
+            )
+        
+        try :
+            dto=RestaurantUpdateDto.from_dict(self.request.data)
+        except JSONDecodeError:
+            return self.error(
+                status=400,
+                code="invalid_request",
+                message="Request body must be valid JSON.",
+            )
+        if not isinstance(dto, dict):
+            return self.error(
+                status=400,
+                code="invalid_request",
+                message="Request body must be a JSON object.",
+            )
+        
+        for field, value in dto.items():
+            setattr(restaurant, field, value)
+        restaurant.save()
+        return self.json({"data": RestaurantDto.from_model(restaurant)})
 
     @delete("<slug:slug>/")
     @guard(UserIsAuthenticated)
