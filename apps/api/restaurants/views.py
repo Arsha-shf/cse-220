@@ -14,8 +14,9 @@ from api_http import (
     post,
 )
 from restaurants.dtos import RestaurantDto
-from restaurants.models import Restaurant
+from restaurants.models import Restaurant, Category
 from users.models import UserRole
+
 
 @controller()
 class RestaurantsController(Controller):
@@ -23,7 +24,6 @@ class RestaurantsController(Controller):
 
     @get()
     def restaurants_list(self):
-        """Return paginated restaurant results with DTO serialization."""
         include_fields, omit_fields, with_fields = self.list_query_fields()
         active_with_fields = self.resolve_list_with_fields(
             RestaurantDto,
@@ -70,48 +70,51 @@ class RestaurantsController(Controller):
     @post()
     @guard(UserIsAuthenticated)
     @guard(UserRoleRequired(UserRole.OWNER))
-    def restaurant_create(self):
-        """Scaffold for owner-only restaurant creation."""
-        # TODO(implementation guide):
-        # 1) Auth check (skip)
-        # 2) Role check for owners (skip)
-        #
-        # 3) Parse request JSON body and validate required fields.
-        #    - validate at least: name, description, category_id, address_line1, city
-        #    - validate category exists (Category.objects.filter(id=...).first())
-        #    - validate enums like price_range against model choices
-        #
-        # 4) Persist model using Django ORM.
-        #    - restaurant = Restaurant.objects.create(..., owner=user, category=category)
-        #
-        # 5) Serialize and return using new DTO + api_http helper.
-        #    - return self.created({"data": RestaurantDto.from_model(restaurant)})
-        return self.error(
-            status=501,
-            code="not_implemented",
-            message="restaurant_create is scaffolded but not implemented.",
+    def create_restaurant(self, data: RestaurantDto):
+        user = getattr(self.request, "user", None)
+
+        category = Category.objects.filter(id=data.category_id).first()
+        if not category:
+            return self.error(
+                status=400,
+                code="invalid_category",
+                message="Category does not exist."
+            )
+
+        # TODO: Adding level for phone, price, ... validation
+        restaurant = Restaurant.objects.create(
+            name=data.name,
+            description=data.description,
+            address_line1=data.address_line1,
+            city=data.city,
+            category=category,
+            owner=user,
+            price_range=data.price_range
         )
-    
+        return self.created({"data": RestaurantDto.from_model(restaurant)})
+
     @patch("<slug:slug>/")
     @guard(UserIsAuthenticated)
     @guard(UserRoleRequired(UserRole.OWNER))
     def restaurant_update(self, slug):
         """Scaffold for owner-only restaurant update."""
         restaurant = Restaurant.objects.filter(slug=slug).first()
-        if restaurant is None: 
+        if restaurant is None:
             return self.error(
-                status=404, 
-                code="not_found", 
+                status=404,
+                code="not_found",
                 message="Restaurant not found.")
         if restaurant.owner_id != self.request.user.id:
             return self.error(
                 status=403,
                 code="forbidden",
-                message="You do not have permission to update this restaurant.",
+                message="You do not have permission to update this restaurant."
             )
-        
-        try :
-            dto=RestaurantUpdateDto.from_dict(self.request.data)
+
+        try:
+            dto = RestaurantUpdateDto.from_dict(
+                self.request.data
+            )
         except JSONDecodeError:
             return self.error(
                 status=400,
@@ -124,7 +127,7 @@ class RestaurantsController(Controller):
                 code="invalid_request",
                 message="Request body must be a JSON object.",
             )
-        
+
         for field, value in dto.items():
             setattr(restaurant, field, value)
         restaurant.save()
@@ -133,7 +136,7 @@ class RestaurantsController(Controller):
     @delete("<slug:slug>/")
     @guard(UserIsAuthenticated)
     @guard(UserRoleRequired(UserRole.ADMIN))
-    def restaurant_delete(self, slug):
+    def delete_restaurant(self, slug):
         """Scaffold for admin-only restaurant deletion."""
         restaurant = Restaurant.objects.filter(slug=slug).first()
         if restaurant is None:
