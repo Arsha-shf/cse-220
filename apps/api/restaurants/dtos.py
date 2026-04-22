@@ -67,7 +67,9 @@ class RestaurantUpdateDto(BaseDto):
         "price_range": "price_range",
     }
 
+    @classmethod
     def from_dict(cls, data):
-        """Create DTO from dict, ignoring unknown fields."""
-        valid_data = {field: data[field] for field in cls.field_map if field in data}
-        return cls(**valid_data)
+        """Return validated update payload containing only allowed fields."""
+        if not isinstance(data, dict):
+            return {}
+        return {field: data[field] for field in cls.field_map if field in data}

@@ -1,7 +1,4 @@
 """Views for restaurant endpoints."""
-
-from json import JSONDecodeError
-from dtos import RestaurantUpdateDto
 from api_http import (
     Controller,
     UserIsAuthenticated,
@@ -13,7 +10,7 @@ from api_http import (
     patch,
     post,
 )
-from restaurants.dtos import RestaurantDto
+from restaurants.dtos import RestaurantDto, RestaurantUpdateDto
 from restaurants.models import Restaurant, Category
 from users.models import UserRole
 
@@ -111,16 +108,7 @@ class RestaurantsController(Controller):
                 message="You do not have permission to update this restaurant."
             )
 
-        try:
-            dto = RestaurantUpdateDto.from_dict(
-                self.request.data
-            )
-        except JSONDecodeError:
-            return self.error(
-                status=400,
-                code="invalid_request",
-                message="Request body must be valid JSON.",
-            )
+        dto = RestaurantUpdateDto.from_dict(self.request.data)
         if not isinstance(dto, dict):
             return self.error(
                 status=400,
