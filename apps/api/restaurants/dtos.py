@@ -46,3 +46,28 @@ class RestaurantDto(BaseDto):
     }
 
     default_with = ("category",)
+
+
+class RestaurantUpdateDto(BaseDto):
+    """Restaurant update request DTO."""
+
+    field_map = {
+        "name": "name",
+        "description": "description",
+        "phone": "phone",
+        "website": "website",
+        "category_id": "category_id",
+        "address_line1": "address_line1",
+        "address_line2": "address_line2",
+        "city": "city",
+        "district": "district",
+        "postal_code": "postal_code",
+        "latitude": "latitude",
+        "longitude": "longitude",
+        "price_range": "price_range",
+    }
+
+    def from_dict(cls, data):
+        """Create DTO from dict, ignoring unknown fields."""
+        valid_data = {field: data[field] for field in cls.field_map if field in data}
+        return cls(**valid_data)
