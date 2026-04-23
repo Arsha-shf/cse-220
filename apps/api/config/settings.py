@@ -37,6 +37,9 @@ INSTALLED_APPS = [
     "corsheaders",
     # Local apps
     "api",
+    "users",
+    "restaurants",
+    "reviews",
 ]
 
 MIDDLEWARE = [
@@ -109,14 +112,22 @@ MEDIA_ROOT = BASE_DIR / "media"
 # Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# CORS settings
-CORS_ALLOWED_ORIGINS = config(
-    "CORS_ALLOWED_ORIGINS",
-    default="http://localhost:3000,http://localhost:3001",
-    cast=lambda v: [s.strip() for s in v.split(",")],
-)
-CORS_ALLOW_CREDENTIALS = True
+# Custom user model
+AUTH_USER_MODEL = "users.User"
 
-# File upload settings
-FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10MB
-DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10MB
+# CORS settings
+is_debug = config("DEBUG", default=None)
+if is_debug is None:
+    is_debug = config("DJANGO_DEBUG", default=True, cast=bool)
+else:
+    is_debug = config("DEBUG", default=False, cast=bool)
+
+if is_debug:
+    CORS_ALLOW_ALL_ORIGINS = True
+else:
+    CORS_ALLOWED_ORIGINS = config(
+        "CORS_ALLOWED_ORIGINS",
+        default="http://localhost:3000,http://localhost:3001,http://localhost:8020",
+        cast=lambda v: [s.strip() for s in v.split(",")],
+    )
+CORS_ALLOW_CREDENTIALS = True

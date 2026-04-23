@@ -1,11 +1,15 @@
 """Health unit test module."""
 
-from api.health import health
+import json
+
+from api.health import HealthController
 
 
 def test_health():
     """Test the health function."""
-    assert health() == JsonResponse({
-        "status": "ok",
-        "service": "flavormap-api"
-    })
+    response = HealthController(None).health()
+
+    assert response.status_code == 200
+    payload = json.loads(response.content)
+    assert payload["status"] == "ok"
+    assert payload["service"] == "flavormap-api"
