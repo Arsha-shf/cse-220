@@ -1,8 +1,7 @@
-from api_http import build_urlpatterns
+from django.urls import path
+
 from api.health import HealthController
-from restaurants.views import RestaurantsController
 
 urlpatterns = [
-    *build_urlpatterns(HealthController),
-    *build_urlpatterns(RestaurantsController),
+    path("", HealthController.as_view(), name="health"),
 ]

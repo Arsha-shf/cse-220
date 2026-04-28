@@ -1,6 +1,15 @@
-from api_http import build_urlpatterns
-from restaurants.views import RestaurantsController
+from django.urls import path
+
+from reviews.views import RestaurantReviewsController
+from restaurants.views import RestaurantDetailController, OwnerRestaurantsController, RestaurantsController
 
 urlpatterns = [
-    *build_urlpatterns(RestaurantsController),
+    path("", RestaurantsController.as_view(), name="restaurants-list"),
+    path("mine/", OwnerRestaurantsController.as_view(), name="restaurants-mine"),
+    path(
+        "<slug:restaurant_slug>/reviews/",
+        RestaurantReviewsController.as_view(),
+        name="restaurants-reviews",
+    ),
+    path("<slug:slug>/", RestaurantDetailController.as_view(), name="restaurants-detail"),
 ]

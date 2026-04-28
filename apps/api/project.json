@@ -3,6 +3,13 @@
   "$schema": "../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "sourceRoot": "apps/api/api",
+  "release": {
+    "version": {
+      "versionActions": "@nxlv/python/release/version-actions"
+    }
+  },
+  "tags": [],
+  "implicitDependencies": [],
   "targets": {
     "lock": {
       "executor": "@nxlv/python:lock",
@@ -35,6 +42,13 @@
       },
       "cache": true
     },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "poetry run ruff check .",
+        "cwd": "{projectRoot}"
+      }
+    },
     "test": {
       "executor": "@nxlv/python:run-commands",
       "outputs": [
@@ -58,7 +72,7 @@
     "runserver": {
       "executor": "@nxlv/python:run-commands",
       "options": {
-        "command": "poetry run python manage.py runserver",
+        "command": "poetry run python manage.py runserver 0.0.0.0:8020",
         "cwd": "{projectRoot}"
       },
       "cache": false
@@ -136,13 +150,6 @@
         "verbose": false,
         "debug": false
       }
-    }
-  },
-  "tags": [],
-  "implicitDependencies": ["api-http"],
-  "release": {
-    "version": {
-      "versionActions": "@nxlv/python/release/version-actions"
     }
   }
 }
