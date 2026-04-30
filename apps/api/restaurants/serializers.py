@@ -26,6 +26,7 @@ class MenuItemSerializer(serializers.ModelSerializer):
     """Restaurant menu item read serializer."""
 
     restaurant_id = serializers.UUIDField(read_only=True)
+    category = CategorySerializer(read_only=True)
     image_url = serializers.SerializerMethodField()
 
     class Meta:
@@ -53,12 +54,20 @@ class MenuItemSerializer(serializers.ModelSerializer):
 class MenuItemWriteSerializer(serializers.ModelSerializer):
     """Request serializer for menu item create/update."""
 
+    category_id = serializers.PrimaryKeyRelatedField(
+        queryset=Category.objects.all(),
+        source="category",
+        required=True,
+    )
+    currency = serializers.CharField(max_length=3, required=True)
+    is_available = serializers.BooleanField(required=True)
+
     class Meta:
         model = MenuItem
         fields = [
             "name",
             "description",
-            "category",
+            "category_id",
             "price",
             "currency",
             "image",
@@ -67,13 +76,9 @@ class MenuItemWriteSerializer(serializers.ModelSerializer):
         ]
         extra_kwargs = {
             "description": {"required": False},
-            "category": {"required": False},
-            "currency": {"required": False},
             "image": {"required": False},
-            "is_available": {"required": False},
             "sort_order": {"required": False},
         }
-
 
 class RestaurantSerializer(DynamicFieldsModelSerializer):
     """Restaurant read serializer."""

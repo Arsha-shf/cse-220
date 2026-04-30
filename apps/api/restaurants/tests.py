@@ -248,8 +248,10 @@ def test_menu_item_list_no_auth_required():
         restaurant=restaurant,
         name="Test Burger",
         description="A test menu item",
-        category="Main",
+        category=restaurant.category,
         price="12.50",
+        currency="EUR",
+        is_available=True,
     )
 
     try:
@@ -259,7 +261,7 @@ def test_menu_item_list_no_auth_required():
         payload = response.json()
         assert payload["data"][0]["id"] == str(menu_item.id)
         assert payload["data"][0]["name"] == "Test Burger"
-        assert payload["data"][0]["category"] == "Main"
+        assert payload["data"][0]["category"]["id"] == str(restaurant.category_id)
         assert payload["data"][0]["price"] == "12.50"
     finally:
         restaurant.delete()
@@ -275,7 +277,13 @@ def test_menu_item_create_requires_authentication():
     try:
         response = client.post(
             f"/api/v1/restaurants/{restaurant.slug}/menu-items/",
-            data={"name": "Soup", "price": "7.00"},
+            data={
+                "name": "Soup",
+                "category_id": str(restaurant.category_id),
+                "price": "7.00",
+                "currency": "EUR",
+                "is_available": True,
+            },
             content_type="application/json",
         )
 
@@ -300,8 +308,10 @@ def test_menu_item_create_update_delete_by_restaurant_owner():
             data={
                 "name": "Lentil Soup",
                 "description": "Warm starter",
-                "category": "Starter",
+                "category_id": str(restaurant.category_id),
                 "price": "6.50",
+                "currency": "EUR",
+                "is_available": True,
             },
             content_type="application/json",
         )
@@ -309,7 +319,7 @@ def test_menu_item_create_update_delete_by_restaurant_owner():
         assert create_response.status_code == 201
         created = create_response.json()["data"]
         assert created["name"] == "Lentil Soup"
-        assert created["category"] == "Starter"
+        assert created["category"]["id"] == str(restaurant.category_id)
 
         menu_item_id = created["id"]
         patch_response = client.patch(
@@ -346,7 +356,13 @@ def test_menu_item_create_for_other_owner_forbidden():
         client.force_login(other_owner)
         response = client.post(
             f"/api/v1/restaurants/{restaurant.slug}/menu-items/",
-            data={"name": "Soup", "price": "7.00"},
+            data={
+                "name": "Soup",
+                "category_id": str(restaurant.category_id),
+                "price": "7.00",
+                "currency": "EUR",
+                "is_available": True,
+            },
             content_type="application/json",
         )
 
@@ -367,7 +383,10 @@ def test_menu_item_detail_is_scoped_to_restaurant():
     menu_item = MenuItem.objects.create(
         restaurant=first_restaurant,
         name="Only First Restaurant",
+        category=first_restaurant.category,
         price="10.00",
+        currency="EUR",
+        is_available=True,
     )
 
     try:

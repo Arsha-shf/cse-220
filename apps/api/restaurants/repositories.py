@@ -31,12 +31,12 @@ class RestaurantRepository:
         restaurant.delete()
 
     def list_menu_items(self, restaurant):
-        return MenuItem.objects.filter(restaurant=restaurant).select_related("restaurant", "image")
+        return MenuItem.objects.filter(restaurant=restaurant).select_related("restaurant", "category", "image")
 
     def get_menu_item(self, *, restaurant, menu_item_id):
         return (
             MenuItem.objects.filter(id=menu_item_id, restaurant=restaurant)
-            .select_related("restaurant", "image")
+            .select_related("restaurant", "category", "image")
             .first()
         )
 
