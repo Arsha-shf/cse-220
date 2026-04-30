@@ -145,6 +145,7 @@ class MenuItem(models.Model):
     )
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
+    category = models.CharField(max_length=100, blank=True, default="")
     price = models.DecimalField(max_digits=10, decimal_places=2)
     currency = models.CharField(max_length=3, default="EUR")
     image = models.ForeignKey(
