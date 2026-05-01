@@ -294,6 +294,7 @@ class Command(BaseCommand):
         created_total = 0
 
         for restaurant in restaurants:
+            restaurant_category = restaurant.categories.first()
             MenuItem.objects.filter(
                 restaurant=restaurant,
                 name__startswith="Mock ",
@@ -318,6 +319,7 @@ class Command(BaseCommand):
                     currency="EUR",
                     is_available=True,
                     sort_order=sort_order,
+                    category=restaurant_category,
                 )
                 created_total += 1
 
