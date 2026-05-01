@@ -125,6 +125,8 @@ def test_restaurant_detail_no_auth_required():
     """GET /restaurants/{slug}/ should not require authentication."""
     client = Client()
     restaurant = _create_restaurant()
+    category = restaurant.categories.first()
+    owner = restaurant.owner
 
     try:
         response = client.get(f"/api/v1/restaurants/{restaurant.slug}/")
@@ -133,14 +135,16 @@ def test_restaurant_detail_no_auth_required():
         assert "data" in response.json()
     finally:
         restaurant.delete()
-        restaurant.categories.first().delete()
-        restaurant.owner.delete()
+        category.delete()
+        owner.delete()
 
 
 def test_restaurant_delete_requires_authentication():
     """DELETE /restaurants/{slug}/ requires authentication."""
     client = Client()
     restaurant = _create_restaurant()
+    category = restaurant.categories.first()
+    owner = restaurant.owner
 
     try:
         response = client.delete(f"/api/v1/restaurants/{restaurant.slug}/")
@@ -149,8 +153,8 @@ def test_restaurant_delete_requires_authentication():
         assert response.json()["error"]["code"] == "auth_required"
     finally:
         restaurant.delete()
-        restaurant.categories.first().delete()
-        restaurant.owner.delete()
+        category.delete()
+        owner.delete()
 
 
 def test_restaurant_delete_requires_admin_role():
@@ -158,6 +162,8 @@ def test_restaurant_delete_requires_admin_role():
     client = Client()
     regular_user = _create_user(role=UserRole.USER)
     restaurant = _create_restaurant()
+    category = restaurant.categories.first()
+    owner = restaurant.owner
 
     try:
         client.force_login(regular_user)
@@ -167,8 +173,8 @@ def test_restaurant_delete_requires_admin_role():
         assert response.json()["error"]["code"] == "forbidden"
     finally:
         restaurant.delete()
-        restaurant.categories.first().delete()
-        restaurant.owner.delete()
+        category.delete()
+        owner.delete()
         regular_user.delete()
 
 
@@ -193,6 +199,7 @@ def test_restaurant_delete_session_auth_requires_csrf_when_enforced():
     client = Client(enforce_csrf_checks=True)
     admin = _create_user(role=UserRole.ADMIN)
     restaurant = _create_restaurant()
+    category = restaurant.categories.first()
 
     try:
         client.force_login(admin)
@@ -204,7 +211,7 @@ def test_restaurant_delete_session_auth_requires_csrf_when_enforced():
         assert Restaurant.objects.filter(slug=restaurant.slug).exists()
     finally:
         restaurant.delete()
-        restaurant.categories.first().delete()
+        category.delete()
         admin.delete()
 
 
@@ -227,6 +234,7 @@ def test_restaurant_delete_owner_cannot_delete():
     client = Client()
     owner = _create_user(role=UserRole.OWNER)
     restaurant = _create_restaurant()
+    category = restaurant.categories.first()
 
     try:
         client.force_login(owner)
@@ -236,7 +244,7 @@ def test_restaurant_delete_owner_cannot_delete():
         assert response.json()["error"]["code"] == "forbidden"
     finally:
         restaurant.delete()
-        restaurant.categories.first().delete()
+        category.delete()
         owner.delete()
 
 
@@ -244,11 +252,13 @@ def test_menu_item_list_no_auth_required():
     """GET /restaurants/{slug}/menu-items/ exposes menu items for a restaurant."""
     client = Client()
     restaurant = _create_restaurant()
+    category = restaurant.categories.first()
+    owner = restaurant.owner
     menu_item = MenuItem.objects.create(
         restaurant=restaurant,
         name="Test Burger",
         description="A test menu item",
-        category=restaurant.categories.first(),
+        category=category,
         price="12.50",
         currency="EUR",
         is_available=True,
@@ -261,25 +271,27 @@ def test_menu_item_list_no_auth_required():
         payload = response.json()
         assert payload["data"][0]["id"] == str(menu_item.id)
         assert payload["data"][0]["name"] == "Test Burger"
-        assert payload["data"][0]["category"]["id"] == str(restaurant.categories.first().id)
+        assert payload["data"][0]["category"]["id"] == str(category.id)
         assert payload["data"][0]["price"] == "12.50"
     finally:
         restaurant.delete()
-        restaurant.categories.first().delete()
-        restaurant.owner.delete()
+        category.delete()
+        owner.delete()
 
 
 def test_menu_item_create_requires_authentication():
     """POST /restaurants/{slug}/menu-items/ requires a logged-in user."""
     client = Client()
     restaurant = _create_restaurant()
+    category = restaurant.categories.first()
+    owner = restaurant.owner
 
     try:
         response = client.post(
             f"/api/v1/restaurants/{restaurant.slug}/menu-items/",
             data={
                 "name": "Soup",
-                "category_id": str(restaurant.categories.first().id),
+                "category_id": str(category.id),
                 "price": "7.00",
                 "currency": "EUR",
                 "is_available": True,
@@ -291,8 +303,8 @@ def test_menu_item_create_requires_authentication():
         assert response.json()["error"]["code"] == "auth_required"
     finally:
         restaurant.delete()
-        restaurant.categories.first().delete()
-        restaurant.owner.delete()
+        category.delete()
+        owner.delete()
 
 
 def test_menu_item_create_update_delete_by_restaurant_owner():
@@ -300,6 +312,7 @@ def test_menu_item_create_update_delete_by_restaurant_owner():
     client = Client()
     owner = _create_user(role=UserRole.OWNER)
     restaurant = _create_restaurant(owner=owner)
+    category = restaurant.categories.first()
 
     try:
         client.force_login(owner)
@@ -308,7 +321,7 @@ def test_menu_item_create_update_delete_by_restaurant_owner():
             data={
                 "name": "Lentil Soup",
                 "description": "Warm starter",
-                "category_id": str(restaurant.categories.first().id),
+                "category_id": str(category.id),
                 "price": "6.50",
                 "currency": "EUR",
                 "is_available": True,
@@ -319,7 +332,7 @@ def test_menu_item_create_update_delete_by_restaurant_owner():
         assert create_response.status_code == 201
         created = create_response.json()["data"]
         assert created["name"] == "Lentil Soup"
-        assert created["category"]["id"] == str(restaurant.categories.first().id)
+        assert created["category"]["id"] == str(category.id)
 
         menu_item_id = created["id"]
         patch_response = client.patch(
@@ -341,7 +354,7 @@ def test_menu_item_create_update_delete_by_restaurant_owner():
         assert not MenuItem.objects.filter(id=menu_item_id).exists()
     finally:
         restaurant.delete()
-        restaurant.categories.first().delete()
+        category.delete()
         owner.delete()
 
 
@@ -351,6 +364,7 @@ def test_menu_item_create_for_other_owner_forbidden():
     owner = _create_user(role=UserRole.OWNER)
     other_owner = _create_user(role=UserRole.OWNER)
     restaurant = _create_restaurant(owner=owner)
+    category = restaurant.categories.first()
 
     try:
         client.force_login(other_owner)
@@ -358,7 +372,7 @@ def test_menu_item_create_for_other_owner_forbidden():
             f"/api/v1/restaurants/{restaurant.slug}/menu-items/",
             data={
                 "name": "Soup",
-                "category_id": str(restaurant.categories.first().id),
+                "category_id": str(category.id),
                 "price": "7.00",
                 "currency": "EUR",
                 "is_available": True,
@@ -370,7 +384,7 @@ def test_menu_item_create_for_other_owner_forbidden():
         assert response.json()["error"]["code"] == "forbidden"
     finally:
         restaurant.delete()
-        restaurant.categories.first().delete()
+        category.delete()
         owner.delete()
         other_owner.delete()
 
