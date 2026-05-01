@@ -147,6 +147,12 @@ class RestaurantWriteSerializer(serializers.ModelSerializer):
             "price_range",
         ]
 
+    def create(self, validated_data):
+        categories = validated_data.pop("categories", [])
+        restaurant = Restaurant.objects.create(**validated_data)
+        if categories:
+            restaurant.categories.set(categories)
+        return restaurant
 
 class RestaurantUpdateSerializer(RestaurantWriteSerializer):
     """Partial update serializer for restaurant edits."""
@@ -174,3 +180,12 @@ class RestaurantUpdateSerializer(RestaurantWriteSerializer):
             "price_range": {"required": False},
             "logo": {"required": False},
         }
+    
+    def update(self, instance, validated_data):
+        categories = validated_data.pop("categories", None)
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        if categories is not None:
+            instance.categories.set(categories)
+        return instance
